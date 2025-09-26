@@ -26,7 +26,6 @@
         "ASPNETCORE_HTTP_PORTS": "8080",
         "ConnectionStrings__Default": "Server=sql;Database=TemplatePdfDb;User Id=sa;Password=Your_strong_password_123;TrustServerCertificate=True;MultipleActiveResultSets=True"
       },
-      "publishAllPorts": true,
       "useSSL": true
     }
   },

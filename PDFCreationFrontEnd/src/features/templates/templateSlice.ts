@@ -23,7 +23,7 @@ const initialState: TemplateState = {
   error: null
 };
 
-const baseUrl = import.meta.env.PROD ? 'https://localhost:7156' : '';
+const baseUrl = import.meta.env.PROD ? 'http://localhost:8080' : '';
 
 export const fetchTemplate = createAsyncThunk(
   'templates/fetchOne',

@@ -23,12 +23,35 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__Default=Server=sql;Database=TemplatePdfDb;User Id=sa;Password=Your_strong_password_123;TrustServerCertificate=True;MultipleActiveResultSets=True
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
     depends_on:
       sql:
         condition: service_healthy
     ports:
       - "8080:8080"
-   
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  frontend:
+    build:
+      context: ./PDFCreationFrontEnd
+      dockerfile: /Dockerfile
+    container_name: templatepdf-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
 
 volumes:
   mssql_data:

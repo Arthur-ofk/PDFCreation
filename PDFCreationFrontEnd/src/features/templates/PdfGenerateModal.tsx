@@ -15,7 +15,7 @@ interface Template {
   jsonSchema?: string;
 }
 
-const baseUrl = import.meta.env.PROD ? 'https://localhost:7156' : '';
+const baseUrl = import.meta.env.PROD ? 'http://localhost:8080' : '';
 
 const PdfGenerateModal: React.FC<Props> = ({ templateId, templateName, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);

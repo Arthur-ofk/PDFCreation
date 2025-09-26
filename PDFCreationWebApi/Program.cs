@@ -16,7 +16,7 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:5173") 
+        policy.WithOrigins("http://localhost:5173", "http://localhost", "http://localhost:80") 
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -45,6 +45,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.MapGet("/", () => Results.Redirect("/swagger"));
 }
+
+app.MapGet("/health", () => Results.Ok("Healthy"));
 
 app.UseHttpsRedirection();
 
