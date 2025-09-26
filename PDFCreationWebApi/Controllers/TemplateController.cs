@@ -49,8 +49,12 @@ namespace PDFCreationWebApi.Controllers
         [HttpPost("{id}/render-pdf")]
         public async Task<ActionResult> RenderPdf(Guid id, [FromBody] object data)
         {
-            var pdf = await templateService.RenderPdfAsync(id, data);
-            return File(pdf, "application/pdf");
+
+            Console.WriteLine($"Received data for PDF generation: {data}");
+            {
+                var pdf = await templateService.RenderPdfAsync(id, data);
+                return File(pdf, "application/pdf");
+            }
         }
     }
 }

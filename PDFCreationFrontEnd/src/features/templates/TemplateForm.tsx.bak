@@ -1,0 +1,119 @@
+import React, { useState, useCallback } from 'react';
+import type { TemplateDto } from './templateApiSlice';
+import { useCreateTemplateMutation, useUpdateTemplateMutation } from './templateApiSlice';
+import Ajv from 'ajv';
+import '../styles/main.css';
+
+interface Props {
+  template?: TemplateDto | null;
+  onClose: () => void;
+  onSaved: () => void;
+}
+
+const ajv = new Ajv();
+
+const TemplateForm: React.FC<Props> = ({ template, onClose, onSaved }) => {
+  const [name, setName] = useState(template?.name || '');
+  const [htmlContent, setHtmlContent] = useState(template?.content || '');
+  const [jsonSchema, setJsonSchema] = useState(template?.jsonschema || '');
+  const [createTemplate] = useCreateTemplateMutation();
+  const [updateTemplate] = useUpdateTemplateMutation();
+  const [error, setError] = useState('');
+  const [schemaError, setSchemaError] = useState('');
+  const isEdit = !!template;
+
+  const validateJsonSchema = useCallback((schema: string): boolean => {
+    if (!schema.trim()) return true;
+    try {
+      const parsed = JSON.parse(schema);
+      const validate = ajv.compile(parsed);
+      // Test if it's a valid JSON Schema by trying to validate an empty object
+      validate({});
+      setSchemaError('');
+      return true;
+    } catch (err) {
+      setSchemaError(err instanceof Error ? err.message : 'Invalid JSON Schema');
+      return false;
+    }
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setSchemaError('');
+
+    if (!name.trim() || !htmlContent.trim()) {
+      setError('All fields are required');
+      return;
+    }
+
+    if (!validateJsonSchema(jsonSchema)) {
+      return;
+    }
+
+    try {
+      const templateData = {
+        name,
+        content: htmlContent,
+        jsonschema: jsonSchema.trim() || undefined
+      };
+
+      if (isEdit) {
+        await updateTemplate({ id: template!.id, data: templateData }).unwrap();
+      } else {
+        await createTemplate(templateData).unwrap();
+      }
+      onSaved();
+    } catch {
+      setError('Error saving the template');
+    }
+  };
+
+  return (
+    <div className="card">
+      <h2 className="title">{isEdit ? 'Edit Template' : 'New Template'}</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="name">Name:</label>
+          <input
+            id="name"
+            className="form-control"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Enter template name"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="html">HTML Content:</label>
+          <textarea
+            id="html"
+            className="form-control code-editor"
+            value={htmlContent}
+            onChange={e => setHtmlContent(e.target.value)}
+            rows={8}
+            placeholder="Enter HTML template"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="schema">JSON Schema (optional):</label>
+          <textarea
+            id="schema"
+            className="form-control code-editor"
+            value={jsonSchema}
+            onChange={e => setJsonSchema(e.target.value)}
+            rows={6}
+            placeholder="Enter JSON Schema for template validation"
+          />
+          {schemaError && <div className="error-message">{schemaError}</div>}
+        </div>
+        {error && <div className="error-message">{error}</div>}
+        <div className="actions">
+          <button type="submit" className="button">Save</button>
+          <button type="button" className="button secondary" onClick={onClose}>Cancel</button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+export default TemplateForm;

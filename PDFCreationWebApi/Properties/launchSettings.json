@@ -3,7 +3,8 @@
     "http": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ConnectionStrings__Default": "Server=ARTPC;Database=PDFTemplates;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5290"
@@ -23,7 +24,7 @@
       "environmentVariables": {
         "ASPNETCORE_HTTPS_PORTS": "8081",
         "ASPNETCORE_HTTP_PORTS": "8080",
-        "Default": "ConnectionStrings__Default=Server=sql;Database=TemplatePdfDb;User Id=sa;Password=Your_strong_password_123;TrustServerCertificate=True;MultipleActiveResultSets=True"
+        "ConnectionStrings__Default": "Server=sql;Database=TemplatePdfDb;User Id=sa;Password=Your_strong_password_123;TrustServerCertificate=True;MultipleActiveResultSets=True"
       },
       "publishAllPorts": true,
       "useSSL": true

@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="15.0.1" />
+    <PackageReference Include="Handlebars.Net" Version="2.1.6" />
+    <PackageReference Include="PuppeteerSharp" Version="14.1.0" />
   </ItemGroup>
 
   <ItemGroup>
